@@ -5,6 +5,15 @@ Newest entries on top.
 
 ---
 
+## 2026-06-28 11:57 -- Modeling / Captured: main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB)
+
+**Type:** Modeling / Capture
+**BC:** main
+**Filed to:** backlog
+**Summary:** Spike to measure where the sidecar's ~2.4 GB resident memory actually goes on Windows (runtime/codec/model-1/model-2) and recommend a lever to cut it. Captured the user's "boil the two models down to one" idea but flagged that pocket-tts is load-time language-bound (research §3/§7, ADR 0024), so one multilingual instance can't serve EN+DE and the two models are only ~270 MB of the 2.4 GB — the runtime is the likely hog. Quantization / shared codec / ONNX path are the candidate levers to assess.
+
+---
+
 ## 2026-05-24 -- Work session ended
 
 **Type:** Work / Session end

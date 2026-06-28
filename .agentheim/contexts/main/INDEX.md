@@ -10,7 +10,7 @@ research touching this BC, and concept synthesis pages.
 ## Tasks by status
 
 <!-- task-counts:start -->
-- **Backlog:** 0
+- **Backlog:** 1
 - **Todo:** 0
 - **Doing:** 0
 - **Done:** 47
@@ -79,7 +79,7 @@ research touching this BC, and concept synthesis pages.
 
 ### Backlog
 <!-- backlog-list:start -->
-<!-- no tasks in backlog -->
+- **main-r8k3w** -- Cut the Python sidecar's RAM footprint (~2.4 GB) — measure where it goes, then decide the lever -- 2026-06-28 -- `backlog/main-r8k3w-sidecar-ram-footprint.md`
 <!-- backlog-list:end -->
 
 ## ADRs scoped to this BC
