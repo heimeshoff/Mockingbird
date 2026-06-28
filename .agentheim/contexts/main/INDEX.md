@@ -10,15 +10,15 @@ research touching this BC, and concept synthesis pages.
 ## Tasks by status
 
 <!-- task-counts:start -->
-- **Backlog:** 1
-- **Todo:** 0
+- **Backlog:** 0
+- **Todo:** 1
 - **Doing:** 0
 - **Done:** 48
 <!-- task-counts:end -->
 
 ### Todo
 <!-- todo-list:start -->
-<!-- no tasks in todo -->
+- **main-d7m2k** -- Revert the sidecar's German model from german_24l back to distilled german (ADR 0025) — biggest RAM cut -- 2026-06-28 -- `todo/main-d7m2k-revert-german-24l-to-distilled.md`
 <!-- todo-list:end -->
 
 ### Doing
@@ -80,7 +80,7 @@ research touching this BC, and concept synthesis pages.
 
 ### Backlog
 <!-- backlog-list:start -->
-- **main-d7m2k** -- Revert the sidecar's German model from german_24l back to distilled german (ADR 0025) — biggest RAM cut -- 2026-06-28 -- `backlog/main-d7m2k-revert-german-24l-to-distilled.md`
+<!-- no tasks in backlog -->
 <!-- backlog-list:end -->
 
 ## ADRs scoped to this BC

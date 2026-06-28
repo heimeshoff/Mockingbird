@@ -5,6 +5,17 @@ Newest entries on top.
 
 ---
 
+## 2026-06-28 13:40 -- Modeling / Refined: main-d7m2k - Revert the sidecar's German model from german_24l back to distilled german
+
+**Type:** Modeling / Refine
+**BC:** main
+**Status after:** todo
+**Summary:** Closed the one open product call this `decision` task existed to capture — Marco confirmed there is no deliberate `german_24l` quality preference, so the revert to distilled `german` proceeds and ADR 0025 stands. No new modeling depth was needed (the architect pass during main-r8k3w already assessed every RAM lever and ADR 0029 closed the quantization alternative). Updated the task: AC #1 marked decided, "What" step 1 struck through as done, status flipped to todo. The remaining steps are mechanical (flip `SidecarHost.cs:291` `--language german_24l` → `german`, re-measure the ~867 MB cut, Stop smoke-test, juergen listen-check, drop the README drift note). Promoted backlog → todo in the same pass.
+**Split into:** none
+**ADRs written:** none (ADR 0025 already stands as the decision of record; its 2026-06-28 drift addendum governs)
+
+---
+
 ## 2026-06-28 13:25 -- Work session ended
 
 **Type:** Work / Session end

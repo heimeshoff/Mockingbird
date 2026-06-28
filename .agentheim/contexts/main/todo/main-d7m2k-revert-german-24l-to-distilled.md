@@ -1,7 +1,7 @@
 ---
 id: main-d7m2k
 title: Revert the sidecar's German model from german_24l back to distilled german (ADR 0025) — biggest RAM cut
-status: backlog
+status: todo
 type: decision
 context: main
 created: 2026-06-28
@@ -40,12 +40,16 @@ same prompt; distilled german is ~6× less LM compute).
 ## What (decision needed)
 
 This is a one-line code change but a **product/quality call**, so it is a
-`decision` task, not a free edit:
+`decision` task, not a free edit. The product call is now **made** — Marco
+confirmed on 2026-06-28 there is no deliberate `german_24l` preference; the
+revert to distilled `german` proceeds (ADR 0025 stands). What remains is the
+mechanical execution:
 
-1. **Confirm with the user** there is no deliberate `german_24l` quality
-   preference that should override ADR 0025. (Evidence says no: main-038 found no
-   audible difference, ADR 0025 + its addendum say distilled stands.)
-2. If confirmed, **flip `SidecarHost.cs:291`** `--language german_24l` →
+1. ~~Confirm with the user there is no deliberate `german_24l` quality
+   preference.~~ **Done (2026-06-28): confirmed, revert proceeds.** Evidence
+   backed it: main-038 found no audible difference, ADR 0025 + its addendum
+   say distilled stands.
+2. **Flip `SidecarHost.cs:291`** `--language german_24l` →
    `--language german`. Check `PocketTtsEngine.LanguageWireValue` / any wire-value
    mapping and `BuiltInVoices` (juergen) still resolve to `german`, not
    `german_24l`. NOTE: built-in german voice embeddings differ by lineage on disk
@@ -61,8 +65,9 @@ This is a one-line code change but a **product/quality call**, so it is a
 
 ## Acceptance criteria
 
-- [ ] User confirms (or rejects) the revert to distilled `german`.
-- [ ] If confirmed: `SidecarHost.cs:291` launches `--language german` (not
+- [x] User confirms (or rejects) the revert to distilled `german`.
+      **Confirmed 2026-06-28 — revert proceeds, no german_24l preference.**
+- [ ] `SidecarHost.cs:291` launches `--language german` (not
       `german_24l`); german voices (built-in `juergen` + any cloned german voice)
       still synthesise with recognisable timbre (HTTP 200, cloned, not default).
 - [ ] Resident RAM re-measured post-change; the ~867 MB reduction is confirmed
