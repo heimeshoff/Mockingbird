@@ -5,6 +5,19 @@ Newest entries on top.
 
 ---
 
+## 2026-06-28 13:25 -- Work session ended
+
+**Type:** Work / Session end
+**Completed:** 1 (first-try PASS: 1, re-dispatched: 0, skipped: 0)
+**Bounced:** 0
+**Failed:** 0
+**Escalated after verification:** 0
+**Commits:** 1 (b9826cc)
+**New backlog items:** main-d7m2k (decision — revert german_24l → distilled german)
+**Concept candidate surfaced:** sidecar-resident-footprint (artifacts 0024, 0025, 0029, main-r8k3w)
+
+---
+
 ## 2026-06-28 13:20 -- Task verified and completed: main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB)
 
 **Type:** Work / Task completion
