@@ -5,6 +5,17 @@ Newest entries on top.
 
 ---
 
+## 2026-06-28 12:30 -- Modeling / Refined: main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB)
+
+**Type:** Modeling / Refine
+**BC:** main
+**Status after:** todo
+**Summary:** Architect pass overturned the capture's premise against the live code: the sidecar launches `--language english --language german_24l` (`SidecarHost.cs:291`) — the **24-layer** model, not the distilled `german` that ADR 0025 / main-037 chose (641 MB vs 208 MB on disk). So the ~2.4 GB is dominated by german_24l's flow_lm (~1.2 GB est.), not "~270 MB for two models"; the original ~135 MB/model estimate is struck. Added: (1) corrected starting facts + a doc/decision drift to resolve (README/ADR 0025 say `german`, code says `german_24l`); (2) a concrete in-environment measurement harness (`tools/measure_footprint.py`, ctypes `GetProcessMemoryInfo` since psutil is absent, incremental-load stages incl. a distilled-`german` comparison run, live-process cross-check); (3) a reordered lever table — model-swap (lever 1, deferred decision), quantization (lever 2, inline-implementable), shared-codec/drop-model/ONNX (deferred); (4) a gated inline quant arm — already wired (`--quantize` flag), but torchao is absent so the deprecated `torch.ao` path on torch 2.12 must be proven, plus a cloning-regression gate (pocket_tts 2.1.0 fix). Promoted backlog → todo: executable end-to-end in this environment (runtime + pocket_tts 2.1.0 + torch 2.12.0 + cached snapshots all confirmed present).
+**Split into:** none (architectural levers spawn follow-up `decision` tasks at recommendation time)
+**ADRs written:** none (revisits flagged for ADR 0024 / 0025 / 0028; none decided here)
+
+---
+
 ## 2026-06-28 11:57 -- Modeling / Captured: main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB)
 
 **Type:** Modeling / Capture
