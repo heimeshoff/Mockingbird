@@ -25,3 +25,6 @@ __pycache__/
 
 .fake
 .claude/utterheim-voice
+
+## Agentheim local dashboard runtime state (PIDs, ports, bridge token)
+.agentheim/.dashboard/
