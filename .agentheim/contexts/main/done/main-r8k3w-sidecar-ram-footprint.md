@@ -1,15 +1,15 @@
 ---
 id: main-r8k3w
 title: Cut the Python sidecar's RAM footprint (~2.4 GB) — measure where it goes, then decide the lever
-status: todo
+status: done
 type: spike
 context: main
 created: 2026-06-28
-completed:
+completed: 2026-06-28
 depends_on: []
 blocks: []
 tags: [ram, sidecar, performance, pocket-tts, python]
-related_adrs: [0024, 0025, 0002, 0028]
+related_adrs: [0024, 0025, 0002, 0028, 0029]
 related_research: [pocket-tts-german-support-2026-05-18, kyutai-tts-2026-05-01]
 prior_art: [main-036, main-039, main-037, main-038]
 ---
@@ -207,6 +207,87 @@ state, which is exactly what the cloning gate re-verifies.
   supersedes it; quant/swap/shared-codec leave process topology untouched.
 - ADR 0028 (narrator EN+DE voice-pair config) — depends on both languages being
   serveable concurrently; only lever 4 (drop second model) would regress it.
+
+## Outcome
+
+Measure-first spike complete. Harness built, footprint measured in-environment
+(standalone loader + live sidecar cross-check), all five levers assessed against
+the numbers, single recommendation made. **No inline quant shipped** — measured
+out (see below). Recommendation is architectural (lever 1) → deferred to a
+follow-up `decision` task.
+
+### Deliverable
+- `src/Utterheim/PythonSidecar/tools/measure_footprint.py` — ctypes
+  `GetProcessMemoryInfo` probe (no psutil), staged loader mirroring main-039's
+  `_RESIDENT_MODELS` load path, per-model flow_lm/Mimi state_dict breakdown,
+  Mimi-identity check, `--quantize` arm, and `--pid` mode for live-process
+  probing.
+
+### Measured footprint (working set / ~RSS)
+Standalone staged loader, embeddable runtime, HF_HUB_OFFLINE:
+
+| stage | working set | delta |
+|---|---|---|
+| bare interpreter | 16 MB | — |
+| + import torch | 192 MB | +176 |
+| + import pocket_tts | 275 MB | +84 |
+| + load `english` | 698 MB | +423 (flow_lm 341 / mimi 76.5) |
+| + load `german_24l` | **1985 MB** | +1287 (flow_lm **1205** / mimi 76.5) |
+
+Swap arm (en + distilled `german`): **1118 MB** (german flow_lm 341, same as
+english). Live sidecar cross-check (real `serve` invocation): **1998 MB idle**,
+**2137 MB after one warm /tts per language** — standalone-vs-live gap ~13 MB idle
+(uvicorn/FastAPI overhead is small; the warm path adds ~140 MB high-water from
+cached voice state + generation buffers). The capture's "~2.4 GB" is in the
+ballpark of the live peak. **Confirmed: the resident set is model-weight
+dominated; german_24l's 24-layer flow_lm (1205 MB) is the elephant**, exactly as
+the corrected facts predicted. The old "~135 MB/model" estimate is struck.
+
+### Lever assessment (measured)
+1. **german_24l → distilled `german` — WINNER.** −867 MB (1985→1118, ~44%),
+   one-line change, *restores* ADR 0025, also cuts german latency (measured
+   german_24l /tts 4.8 s vs english 1.5 s). Product/quality call → deferred to
+   follow-up **main-d7m2k** (do not flip in the spike, per refinement).
+2. **Inline int8 quant — REJECTED (measured out).** GATE RESULT: `apply_dynamic_int8`
+   **runs end-to-end** on torch 2.12 via the deprecated `torch.ao.quantize_dynamic`
+   fallback (torchao absent) — no crash. BUT it delivers **no resident-RAM cut**:
+   en+german_24l `--quantize` = **2045 MB** (+60 MB vs baseline) and +2 s load.
+   The documented "~48% reduction" needs the absent torchao backend; the load-
+   float32-then-quantize sequence on the fallback keeps the float32 high-water.
+   Cloning gate not exercised — no RAM win to justify shipping. → **ADR 0029.**
+3. **Share one Mimi codec — BLOCKED.** Mimi state_dicts are NOT bit-identical
+   across english/german_24l *nor* english/distilled german (harness check), so
+   aliasing would alter a language's codec. Only ~76 MB/model anyway. Dropped.
+4. **Drop second model — NOT recommended.** Saves the model but regresses
+   concurrent EN+DE narration (ADR 0024/0028). Deferred.
+5. **ONNX/Piper (no torch) — NOT recommended by the numbers.** torch+pocket_tts
+   runtime is ~260 MB; models (1568 MB) dominate. Ripping out torch supersedes
+   ADR 0002 for a minority of the footprint. Deferred.
+
+### Recommendation
+**Lever 1 (revert german_24l → distilled german).** Biggest cheap cut, restores
+an already-made decision, no quality loss (main-038). Executed via follow-up
+decision task **main-d7m2k**. Inline quant (the only inline-eligible lever) is
+rejected on measurement (ADR 0029).
+
+### Resolutions
+- **"One multilingual model for both languages" — NOT AVAILABLE.** pocket-tts
+  binds language at `load_model` time; the loaded instance is single-language
+  (research §3/§7; ADR 0024). Closed; not a RAM lever.
+- **german_24l-vs-german drift — RESOLVED as undocumented drift**, not an
+  intentional supersession (main-038's experimental swap leaked into committed
+  launch args and was never reverted; main-038 found no audible difference).
+  Reconciled: ADR 0025 addendum (2026-06-28) + BC README drift note + the
+  main-d7m2k revert task. Docs already said distilled `german`; only the code
+  drifted.
+
+### Files
+- Created: `src/Utterheim/PythonSidecar/tools/measure_footprint.py`
+- ADRs: `0029-no-inline-int8-quant-for-ram.md` (new); `0025-german-distilled-default.md` (drift addendum)
+- README: `contexts/main/README.md` (Multi-model sidecar row — footprint + drift note)
+- Follow-up: `contexts/main/backlog/main-d7m2k-revert-german-24l-to-distilled.md`
+
+## Notes
 
 **Architect refinement note (2026-06-28):** full code-grounded design — load-path
 line refs, the ctypes harness stages, the quant-wiring locations, and the

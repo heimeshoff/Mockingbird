@@ -10,15 +10,15 @@ research touching this BC, and concept synthesis pages.
 ## Tasks by status
 
 <!-- task-counts:start -->
-- **Backlog:** 0
-- **Todo:** 1
+- **Backlog:** 1
+- **Todo:** 0
 - **Doing:** 0
-- **Done:** 47
+- **Done:** 48
 <!-- task-counts:end -->
 
 ### Todo
 <!-- todo-list:start -->
-- **main-r8k3w** -- Cut the Python sidecar's RAM footprint (~2.4 GB) — measure where it goes, then decide the lever -- 2026-06-28 -- `todo/main-r8k3w-sidecar-ram-footprint.md`
+<!-- no tasks in todo -->
 <!-- todo-list:end -->
 
 ### Doing
@@ -28,6 +28,7 @@ research touching this BC, and concept synthesis pages.
 
 ### Done (most recent first; older entries kept for prior-art search)
 <!-- done-list:start -->
+- **main-r8k3w** -- Cut the Python sidecar's RAM footprint (~2.4 GB) — measure where it goes, then decide the lever -- 2026-06-28 -- `done/main-r8k3w-sidecar-ram-footprint.md`
 - **main-047** -- Language-aware narration — detect EN/DE and speak in a matching voice -- 2026-05-24 -- `done/main-047-language-aware-narration.md`
 - **main-046** -- Implement Stop cancellation propagation into the sidecar (≤2 s recovery — implementation; empirical CPU/RSS/latency ACs deferred to user) -- 2026-05-19 -- `done/main-046-implement-stop-cancellation-propagation.md`
 - **main-045** -- Diagnose pocket-tts cancellation surface and prototype Stop propagation (spike, partial — prototype delivered, empirical measurement deferred to user) -- 2026-05-19 -- `done/main-045-sidecar-leak-on-stop-cycle.md`
@@ -79,7 +80,7 @@ research touching this BC, and concept synthesis pages.
 
 ### Backlog
 <!-- backlog-list:start -->
-<!-- no tasks in backlog -->
+- **main-d7m2k** -- Revert the sidecar's German model from german_24l back to distilled german (ADR 0025) — biggest RAM cut -- 2026-06-28 -- `backlog/main-d7m2k-revert-german-24l-to-distilled.md`
 <!-- backlog-list:end -->
 
 ## ADRs scoped to this BC
@@ -96,6 +97,7 @@ research touching this BC, and concept synthesis pages.
 - **0026** -- Stop cancels in-flight synthesis within <=2 s (amends ADR 0004) -- 2026-05-19 -- `../../knowledge/decisions/0026-stop-cancels-in-flight-synthesis.md`
 - **0027** -- Cancellation propagation mechanism into pocket-tts (proposed; hybrid wrapper + monkey-patch recommended) -- 2026-05-19 -- `../../knowledge/decisions/0027-cancellation-propagation-mechanism.md`
 - **0028** -- Narrator stores the EN+DE voice pair as two sibling files; legacy single file is the English/default slot -- 2026-05-24 -- `../../knowledge/decisions/0028-narrator-voice-pair-config.md`
+- **0029** -- Do not enable inline int8 quantization for RAM reduction (torch.ao fallback yields no resident cut on torch 2.12) -- 2026-06-28 -- `../../knowledge/decisions/0029-no-inline-int8-quant-for-ram.md`
 <!-- adr-local:end -->
 
 ## Research touching this BC

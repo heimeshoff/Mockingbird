@@ -6,7 +6,7 @@ status: accepted
 date: 2026-05-18
 supersedes: []
 superseded_by: []
-related_tasks: [main-037, main-038, main-039]
+related_tasks: [main-037, main-038, main-039, main-r8k3w]
 related_research: [pocket-tts-german-support-2026-05-18]
 ---
 
@@ -163,3 +163,29 @@ quality difference; 24l inference latency feels equivalent to distilled
 on the user's hardware. With no perceptible quality advantage to 24l,
 the rationale above stands by default — distilled matches English's
 variant and is lighter. No follow-up task opened.
+
+## Addendum (2026-06-28, main-r8k3w — drift discovered)
+
+**The live code contradicts this ADR.** `SidecarHost.cs:291` launches
+`serve … --language english --language german_24l` — the 24-layer preview
+model, not the distilled `german` this ADR selected. The BC README and
+main-039 both still document distilled `german`, so the drift is in the
+**code only**, not the docs.
+
+Root cause: the main-038 listen-test temporarily swapped the launch arg to
+`german_24l` and was supposed to be reverted; the revert of the C# launch
+arg never landed (the experimental `german_24l` leaked into committed code).
+This is undocumented drift, not an intentional supersession of ADR 0025 —
+main-038 itself found *no* audible quality advantage to 24l.
+
+The drift carries a real RAM cost, measured in main-r8k3w: `german_24l`'s
+24-layer flow_lm is **1205 MB** in memory vs **341 MB** for distilled
+`german`. The two-model resident set is **~1985 MB** (en + german_24l) vs
+**~1118 MB** (en + distilled german) — reverting the drift cuts ~867 MB
+(~44%) and also restores the uniform latency profile this ADR promised
+(german_24l `/tts` measured 4.8 s vs english 1.5 s on the same prompt).
+
+ADR 0025 stands. The revert (a product/quality call per the spike's lever
+framing) is deferred to follow-up decision task **main-d7m2k**, which will
+confirm with the user that no german_24l quality preference exists and then
+flip `SidecarHost.cs:291` back to distilled `german`.

@@ -5,6 +5,26 @@ Newest entries on top.
 
 ---
 
+## 2026-06-28 13:20 -- Task verified and completed: main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB)
+
+**Type:** Work / Task completion
+**Task:** main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB) — measure where it goes, then decide the lever
+**Summary:** Measured the sidecar's resident footprint (~2.0 GB idle, model-weight dominated: german_24l's 24-layer flow_lm is 1205 MB of it) with a new ctypes harness; assessed all five RAM levers against the numbers and recommended reverting german_24l → distilled german (~867 MB / 44% cut, restores ADR 0025) via follow-up decision main-d7m2k. Inline int8 quant was measured out (torch.ao fallback runs but yields no resident cut, +60 MB) and rejected in ADR 0029.
+**Verification:** PASS (iteration 1)
+**Files changed:** 5
+**Tests added:** 0 (spike — measurement harness, no behavior change)
+**ADRs written:** 0029 (new); 0025 addended (drift addendum)
+
+---
+
+## 2026-06-28 13:00 -- Batch started: [main-r8k3w]
+
+**Type:** Work / Batch start
+**Tasks:** main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB) — measure where it goes, then decide the lever
+**Parallel:** no (1 worker)
+
+---
+
 ## 2026-06-28 12:30 -- Modeling / Refined: main-r8k3w - Cut the Python sidecar's RAM footprint (~2.4 GB)
 
 **Type:** Modeling / Refine
