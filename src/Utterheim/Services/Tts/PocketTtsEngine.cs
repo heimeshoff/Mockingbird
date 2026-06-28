@@ -235,12 +235,12 @@ public sealed class PocketTtsEngine : ITtsEngine
     internal static string LanguageWireValue(VoiceLanguage language) => language switch
     {
         VoiceLanguage.English => "english",
-        // TEMPORARY listen-test swap (main-038 round 2): routing key is
-        // "german_24l" so the sidecar serves the undistilled variant. Revert
-        // to "german" to restore the ADR 0025 production default. Library
-        // persistence still serialises "german" — only the wire/preload key
-        // moves, no library.json migration.
-        VoiceLanguage.German => "german_24l",
+        // ADR 0025: German tracks English's production variant — distilled
+        // "german", not the 24-layer "german_24l" preview. main-038's
+        // listen-test swap to "german_24l" found no audible advantage and was
+        // reverted here (main-d7m2k); the leaked swap cost ~867 MB resident RAM
+        // (main-r8k3w). The preload key in SidecarHost.cs must match this.
+        VoiceLanguage.German => "german",
         _ => throw new ArgumentOutOfRangeException(nameof(language), language, null),
     };
 

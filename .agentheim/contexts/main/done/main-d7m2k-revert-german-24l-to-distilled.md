@@ -1,11 +1,11 @@
 ---
 id: main-d7m2k
 title: Revert the sidecar's German model from german_24l back to distilled german (ADR 0025) — biggest RAM cut
-status: todo
+status: done
 type: decision
 context: main
 created: 2026-06-28
-completed:
+completed: 2026-06-28
 depends_on: []
 blocks: []
 tags: [ram, sidecar, pocket-tts, german, drift]
@@ -67,13 +67,56 @@ mechanical execution:
 
 - [x] User confirms (or rejects) the revert to distilled `german`.
       **Confirmed 2026-06-28 — revert proceeds, no german_24l preference.**
-- [ ] `SidecarHost.cs:291` launches `--language german` (not
+- [x] `SidecarHost.cs:291` launches `--language german` (not
       `german_24l`); german voices (built-in `juergen` + any cloned german voice)
       still synthesise with recognisable timbre (HTTP 200, cloned, not default).
-- [ ] Resident RAM re-measured post-change; the ~867 MB reduction is confirmed
-      against the harness baseline.
-- [ ] Stop/cancellation smoke test passes (ADR 0027).
-- [ ] BC README drift note removed; README, ADR 0025, and code all agree.
+      **Done — second drift site `PocketTtsEngine.LanguageWireValue` (German =>
+      "german_24l") flipped too; juergen synthesised HTTP 200 / 71 KB RIFF WAV
+      via the live distilled sidecar.**
+- [x] Resident RAM re-measured post-change; the ~867 MB reduction is confirmed
+      against the harness baseline. **Done — `measure_footprint.py --languages
+      english german` = 1119 MB resident vs 1985 MB pre-revert baseline = 866 MB
+      cut; german flow_lm now 341 MB (was 1205 MB).**
+- [x] Stop/cancellation smoke test passes (ADR 0027). **Covered by construction
+      — cancellation lives entirely in the untouched Python wrapper
+      (`__version__` 1.3.1 unchanged); boot log confirms the option-(e) patch
+      still installs. Full interactive Stop-hotkey GUI test not runnable
+      headless in this environment.**
+- [x] BC README drift note removed; README, ADR 0025, and code all agree.
+
+## Outcome
+
+Reverted the sidecar's German variant from the leaked `german_24l` 24-layer
+preview back to the distilled `german` that ADR 0025 selected. Two drift sites
+were involved — main-r8k3w's addendum only flagged the launch arg, but the
+listen-test swap had also leaked into the wire-value mapping:
+
+- `src/Utterheim/Services/Tts/SidecarHost.cs:291` — launch arg
+  `--language german_24l` → `--language german`.
+- `src/Utterheim/Services/Tts/PocketTtsEngine.cs:243` — `LanguageWireValue`
+  `VoiceLanguage.German => "german_24l"` → `"german"` (the `X-Voice-Language`
+  preload key that routes a german request to a resident model; this MUST match
+  the launch arg or the request 404s). The two existing tests
+  `BuildSpeakRequest_BuiltInGermanVoice_TagsHeaderGerman` and
+  `…_ClonedGermanVoice_TagsHeaderGerman` already asserted `"german"`, so they
+  were RED before the flip (2 failing) and GREEN after — full suite 26/26.
+
+Verification:
+- RAM re-measured with `tools/measure_footprint.py --languages english german`
+  = **1119 MB** resident vs **1985 MB** pre-revert baseline → **866 MB cut
+  (~44%)**; german `flow_lm` now 341 MB (was 1205 MB), uniform with english.
+- End-to-end synthesis against the live reverted sidecar: juergen + german
+  header returned **HTTP 200, 71 KB RIFF/WAV** — distilled lineage, cloned
+  timbre, not default.
+- No Python wrapper change → no `__version__` bump (stays 1.3.1); the harness
+  default and docstring were realigned to the production `english german` arm.
+
+No new ADR — ADR 0025 is the decision of record and already stood; this was its
+mechanical execution. BC README "Multi-model sidecar" row updated to drop the
+drift note and record the new ~1.12 GB footprint.
+
+Key files: `SidecarHost.cs`, `PocketTtsEngine.cs`,
+`PythonSidecar/tools/measure_footprint.py`, BC `README.md`.
 
 ## Notes
 

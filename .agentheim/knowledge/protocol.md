@@ -5,6 +5,26 @@ Newest entries on top.
 
 ---
 
+## 2026-06-28 14:30 -- Task verified and completed: main-d7m2k - Revert the sidecar's German model from german_24l back to distilled german
+
+**Type:** Work / Task completion
+**Task:** main-d7m2k - Revert the sidecar's German model from german_24l back to distilled german
+**Summary:** Reverted the sidecar's German model from the german_24l 24-layer preview to the distilled `german` (ADR 0025) at BOTH drift sites — the `SidecarHost` launch arg (`--language german_24l` → `german`) and `PocketTtsEngine.LanguageWireValue` (the second site main-r8k3w hadn't flagged) — cutting resident RAM ~866 MB (1985 → 1119 MB). juergen synthesises correctly (HTTP 200, distilled timbre); README drift note removed so code, ADR 0025, and docs agree again.
+**Verification:** PASS (iteration 1) — full suite 26/26 green; both revert sites confirmed (no half-revert).
+**Files changed:** 4
+**Tests added:** 0 (two pre-existing tests asserting `"german"` served as the RED→GREEN guard)
+**ADRs written:** none (ADR 0025 was already the decision of record; this is its execution)
+
+---
+
+## 2026-06-28 14:16 -- Batch started: [main-d7m2k]
+
+**Type:** Work / Batch start
+**Tasks:** main-d7m2k - Revert the sidecar's German model from german_24l back to distilled german
+**Parallel:** no (1 worker)
+
+---
+
 ## 2026-06-28 13:40 -- Modeling / Refined: main-d7m2k - Revert the sidecar's German model from german_24l back to distilled german
 
 **Type:** Modeling / Refine

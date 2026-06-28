@@ -16,9 +16,9 @@ Usage (run with the embeddable interpreter):
     set HF_HOME=%LOCALAPPDATA%\\Utterheim\\models\\pocket-tts
     set HF_HUB_OFFLINE=1
     set PYTHONIOENCODING=utf-8
-    python measure_footprint.py --languages english german_24l
-    python measure_footprint.py --languages english german          # swap arm (c')
-    python measure_footprint.py --languages english german_24l --quantize
+    python measure_footprint.py --languages english german          # production (ADR 0025)
+    python measure_footprint.py --languages english german_24l      # pre-revert arm (main-r8k3w)
+    python measure_footprint.py --languages english german --quantize
     python measure_footprint.py --pid 12345                          # probe a live process
 
 The staged single-process run records WorkingSetSize (~RSS) and PagefileUsage
@@ -206,7 +206,7 @@ def main() -> int:
     parser.add_argument(
         "--languages",
         nargs="+",
-        default=["english", "german_24l"],
+        default=["english", "german"],
         help="languages to load, in order (mirrors serve --language)",
     )
     parser.add_argument(

@@ -11,14 +11,14 @@ research touching this BC, and concept synthesis pages.
 
 <!-- task-counts:start -->
 - **Backlog:** 0
-- **Todo:** 1
+- **Todo:** 0
 - **Doing:** 0
-- **Done:** 48
+- **Done:** 49
 <!-- task-counts:end -->
 
 ### Todo
 <!-- todo-list:start -->
-- **main-d7m2k** -- Revert the sidecar's German model from german_24l back to distilled german (ADR 0025) — biggest RAM cut -- 2026-06-28 -- `todo/main-d7m2k-revert-german-24l-to-distilled.md`
+<!-- no tasks in todo -->
 <!-- todo-list:end -->
 
 ### Doing
@@ -28,6 +28,7 @@ research touching this BC, and concept synthesis pages.
 
 ### Done (most recent first; older entries kept for prior-art search)
 <!-- done-list:start -->
+- **main-d7m2k** -- Revert the sidecar's German model from german_24l back to distilled german (ADR 0025) — biggest RAM cut -- 2026-06-28 -- `done/main-d7m2k-revert-german-24l-to-distilled.md`
 - **main-r8k3w** -- Cut the Python sidecar's RAM footprint (~2.4 GB) — measure where it goes, then decide the lever -- 2026-06-28 -- `done/main-r8k3w-sidecar-ram-footprint.md`
 - **main-047** -- Language-aware narration — detect EN/DE and speak in a matching voice -- 2026-05-24 -- `done/main-047-language-aware-narration.md`
 - **main-046** -- Implement Stop cancellation propagation into the sidecar (≤2 s recovery — implementation; empirical CPU/RSS/latency ACs deferred to user) -- 2026-05-19 -- `done/main-046-implement-stop-cancellation-propagation.md`

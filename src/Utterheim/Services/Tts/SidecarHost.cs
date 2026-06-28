@@ -288,7 +288,7 @@ public sealed class SidecarHost : IHostedService, IDisposable
                     // main-039 / ADR 0024: preload English + German concurrently. The first
                     // --language is also the default for requests without an X-Voice-Language
                     // header (back-compat with the pre-main-039 single-language wire shape).
-                    Arguments = "-u -m utterheim_sidecar serve --host 127.0.0.1 --port 0 --language english --language german_24l",
+                    Arguments = "-u -m utterheim_sidecar serve --host 127.0.0.1 --port 0 --language english --language german",
                     WorkingDirectory = _paths.PythonRuntimePath,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
